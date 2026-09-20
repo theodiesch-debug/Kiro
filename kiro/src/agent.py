@@ -386,6 +386,7 @@ async def my_agent(ctx: JobContext):
         # to the AgentSession.
         room_options=room_io.RoomOptions(
             audio_input=room_io.AudioInputOptions(),
+            video_input=True,
         ),
     )
 
