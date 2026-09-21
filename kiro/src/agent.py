@@ -1,6 +1,9 @@
 import logging
 import textwrap
 
+from browser import BrowserManager
+from tools import BrowserTools
+
 from dotenv import load_dotenv
 from livekit.agents import (
     Agent,
@@ -199,7 +202,7 @@ class Assistant(Agent):
                     * Erfinde niemals ein Ergebnis einer Aktion.
                     * Wenn du eine Aktion nicht ausführen kannst, sage das ehrlich.
                     * Wenn möglich, erkläre anschließend, wie der Benutzer sein Ziel auf anderem Weg erreichen kann.
-
+                    * benutzte das search_web_tool wenn der benutzter danach fragt etwas im Internet zu suchen
                     # Safety and boundaries
 
                     * Bleibe innerhalb sicherer, legaler und angemessener Nutzung.
@@ -306,7 +309,8 @@ async def my_agent(ctx: JobContext):
     #
     # Because Gemini Live handles audio directly, separate
     # STT and TTS models are not needed.
-
+    browser = BrowserManager()
+    browser_tools = BrowserTools(browser)
     session = AgentSession(
 
         # Large Language Model (LLM) is Kiro's brain.
@@ -329,6 +333,7 @@ async def my_agent(ctx: JobContext):
             voice="Enceladus",
             language="de-DE",
         ),
+        tools=browser_tools.tools,
     )
 
     # Start the AgentSession.
@@ -348,7 +353,7 @@ async def my_agent(ctx: JobContext):
             #
             # This allows Kiro to use vision and understand
             # what is visible through the camera.
-            video_input=True,
+            video_input=False,
 
             # Configure the microphone input.
             #
